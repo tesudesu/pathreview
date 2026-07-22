@@ -24,7 +24,7 @@ I can explain what the issue is asking for. I think that the bug may lie in `pii
 
 ## Week 8 — Reproduction & solution planning
 
-**Reproduction commit link:** [link to commit documenting the reproduced issue]
+**Reproduction commit link:** [39d88cd](https://github.com/tesudesu/pathreview/commit/39d88cd)
 
 **Reproduction summary:**
 I reproduced this issue in two ways, first by running the test at `tests/unit/test_pii_scrubber.py`. The failed tests related to this issue are `test_us_phone_number_redaction`, `test_us_phone_formats`, `test_detect_phone_pii`, and `test_phone_at_start_of_text`.
