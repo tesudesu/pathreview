@@ -252,3 +252,57 @@ class TestPIIScrubber:
 
         # Should be minimal or no detections
         # (version number shouldn't be flagged as SSN)
+
+    # --- Phone edge cases (issue #146) ---
+
+    @pytest.mark.parametrize(
+        "phone",
+        [
+            "(555) 123-4567",  # the reported bug: parens + space
+            "(555)123-4567",  # parens, no space
+            "555-123-4567",  # dashes
+            "555.123.4567",  # dots
+            "555 123 4567",  # spaces only
+            "(555) 123 - 4567",  # spaces around the dash
+            "1234567890",  # bare 10 digits
+            "+1 (555) 123-4567",  # country code + parens
+            "+1-555-123-4567",  # country code + dashes
+            "1 555 123 4567",  # country code + spaces
+        ],
+    )
+    def test_phone_us_formats_redacted(self, scrubber, phone):
+        """Various valid US phone formats should be fully redacted."""
+        scrubbed = scrubber.scrub(f"Contact: {phone}")
+        assert "[REDACTED]" in scrubbed
+        # No digit of the phone number should survive.
+        assert not any(c.isdigit() for c in scrubbed)
+
+    def test_phone_us_no_orphaned_prefix(self, scrubber):
+        """Redaction must not leave a stranded '(' or '+' behind.
+
+        The old \\b-anchored regex matched the digits but not the leading
+        paren/plus, producing artifacts like '([REDACTED]' or '+[REDACTED]'.
+        """
+        for text in ["(555)123-4567", "+1-555-123-4567", "(555) 123-4567"]:
+            scrubbed = scrubber.scrub(text)
+            assert scrubbed == "[REDACTED]", scrubbed
+
+    def test_phone_us_trailing_punctuation_preserved(self, scrubber):
+        """A trailing period (end of sentence) stays outside the redaction."""
+        scrubbed = scrubber.scrub("Call (555) 123-4567.")
+        assert scrubbed == "Call [REDACTED]."
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "The project uses version 1.2.3 today.",
+            "Version 12.3.45 build 6789 shipped.",
+            "order 1234567890123456 total",  # 16-digit run (card-like), not a phone
+            "(1234) 567-890",  # wrong grouping (4-3-3)
+            "(555)123-456",  # too few digits
+            "just a normal sentence with 3 items and 2 things",
+        ],
+    )
+    def test_phone_us_no_false_positives(self, scrubber, text):
+        """Numbers that aren't 3-3-4 US phones must be left untouched."""
+        assert scrubber.scrub(text) == text
