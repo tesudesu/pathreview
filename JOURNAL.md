@@ -52,3 +52,42 @@ As you can see, only the first 555-123-4567 phone number is detected as 'phone_u
 
 **Blockers or open questions:**
 None
+
+## Week 9 — Solution building & PR submission
+
+### Check-in 1 (mid-week)
+
+**Current progress:**
+All steps in PLAN.md are essentially done. The basic fix is implemented and new tests are written.
+
+**Next steps:**
+I will look more closely at the new tests and consider whether to adjust the implementation to cover more edge cases. 
+
+**Blockers:**
+
+
+---
+
+### Check-in 2 (end of week)
+
+**PR link:** https://github.com/tesudesu/pathreview/pull/1
+
+**Branch:** `fix/146-redact-phone-numbers-error`
+
+**What you built:**
+The original "phone_us" regex pattern did not allow whitespace separators, so formats like "(123) 456-7890" (space after the parenthesis) were not caught. The original pattern also did not catch the leading parenthesis. Both bugs have now been fixed. 
+
+**Tests added or updated:**
+Added 4 new tests to `test_pii_scrubber.py`:
+
+`test_phone_us_formats_redacted`: Checks that a US phone number is fully redacted. 
+
+`test_phone_us_no_orphaned_prefix`: Makes sure that prefixes like the leading parenthesis or a plus sign are captured with the phone number.
+
+`test_phone_us_trailing_punctuation_preserved`: If the phone number is followed by a full stop, e.g. `(123) 456-7890.`, ensures that the full stop is not captured along with the phone number. 
+
+`test_phone_us_no_false_positives`: Requires the 3, 3, 4 numbers blocks for the US phone number format, so other numbers are not falsely captured.  
+
+**Self-review confirmation:** [x] make check passes (failures are pre-existing)  [x] make test-unit passes (the `test_mixed_pii_and_text` test failure is pre-existing and unrelated to the "phone_us" regex pattern)
+
+**Draft PR feedback received from:** 
