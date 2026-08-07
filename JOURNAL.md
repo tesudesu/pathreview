@@ -91,3 +91,35 @@ Added 4 new tests to `test_pii_scrubber.py`:
 **Self-review confirmation:** [x] make check passes (failures are pre-existing)  [x] make test-unit passes (the `test_mixed_pii_and_text` test failure is pre-existing and unrelated to the "phone_us" regex pattern)
 
 **Draft PR feedback received from:** 
+
+## Week 10 — Iteration & reflection
+
+### Reviewer feedback
+
+**Feedback received:** [ ] Yes  [x] No — still awaiting review
+
+**Summary of feedback:**
+No review came in.
+
+**How you responded:**
+
+---
+
+### Reflection
+
+**What was harder than you expected?**
+Defining the issue (what to fix, how to not over-fix), which means understanding the creator's intention, was harder than I expected.
+
+**What did you learn about working in a large codebase?**
+I learned that crafting a helpful PR submission according to the project's contribution standards (.github file) will increase the probability of getting the PR accepted.
+
+It's also important to make sure that your forked branch is up to date with the upstream branch before submitting a PR.
+
+**How did AI tools help — and where did they fall short?**
+AI was helpful in identifying the bugs, helping me think of edge cases, fixing the bugs, and adding tests. But upon my questions, it said that one of the added tests was largely redundant with the existing tests. I asked it to remove the redundant added test.   
+
+**What would you do differently if you started over?**
+I would think more about the creator's intention for the US phone number redaction - how messy is acceptable vs over-aggressive redaction. This will enable me know what to do about edge cases like missing or added digits, different separators or no separators.
+
+**What are you most proud of from this module?**
+Knowing the steps (from forking to PR) for contributing to an open-source project.
